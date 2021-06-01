@@ -1,0 +1,65 @@
+{
+  "id": "2512565",
+  "name": "four-day",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "434726",
+      "name": "M-cuo",
+      "font_class": "cuo",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
+      "icon_id": "1348254",
+      "name": "退出",
+      "font_class": "tuichu",
+      "unicode": "e616",
+      "unicode_decimal": 58902
+    },
+    {
+      "icon_id": "15668761",
+      "name": "筛 选",
+      "font_class": "shaixuan",
+      "unicode": "e68a",
+      "unicode_decimal": 59018
+    },
+    {
+      "icon_id": "2571142",
+      "name": "书",
+      "font_class": "shu2",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    },
+    {
+      "icon_id": "14996392",
+      "name": "加",
+      "font_class": "jia",
+      "unicode": "e611",
+      "unicode_decimal": 58897
+    },
+    {
+      "icon_id": "356474",
+      "name": "书",
+      "font_class": "shu",
+      "unicode": "e62b",
+      "unicode_decimal": 58923
+    },
+    {
+      "icon_id": "487023",
+      "name": "人",
+      "font_class": "ren",
+      "unicode": "e619",
+      "unicode_decimal": 58905
+    },
+    {
+      "icon_id": "648782",
+      "name": "书",
+      "font_class": "shu1",
+      "unicode": "e625",
+      "unicode_decimal": 58917
+    }
+  ]
+}

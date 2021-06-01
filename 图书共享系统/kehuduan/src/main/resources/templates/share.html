@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>图书分享系统</title>
+        <link rel="stylesheet" href="./iconfont/iconfont.css" />
+        <link rel="stylesheet" href="./common.css" />
+    </head>
+    <body>
+        <script>
+            if(!localStorage.getItem("userID")) window.location.href='./login.html'
+        </script>
+        <header>图 书 分 享 系 统<i class="iconfont icon-jia" onclick="window.location.href='./addbook.html'"></i></header>
+        <main>
+            <ul class="book-list">
+                <li class="book">
+                    <p class="title">红楼梦</p>
+                    <p class="author">曹雪芹</p>
+                </li>
+                <li class="book">
+                    <p class="title">三国演义</p>
+                    <p class="author">罗贯中</p>
+                </li>
+                <li class="book">
+                    <p class="title">西游记</p>
+                    <p class="author">吴承恩</p>
+                </li>
+                <li class="book">
+                    <p class="title">水浒传</p>
+                    <p class="author">施耐庵</p>
+                </li>
+                <li class="book">
+                    <p class="title">金瓶梅</p>
+                    <p class="author">贾三近</p>
+                </li>
+            </ul>
+        </main>
+        
+        <div class="bottom-nav">
+            <ul>
+                <li class="icon" onclick="window.location.href='./index.html'"><i class="iconfont icon-shu"></i><span>个人书籍</span></li>
+                <li class="icon active"><i class="iconfont icon-shu1"></i><span>大家分享</span></li>
+                <li class="icon" onclick="window.location.href='./user.html'"><i class="iconfont icon-ren"></i><span>个人中心</span></li>
+            </ul>
+        </div>
+       
+        <script src="./index.js"></script>
+        <script>
+            const content = document.querySelector('main .book-list')
+            get('/test/user/able_borrow').then((res) => {
+                if (res.code === 0) {
+                    toast('书本获取异常')
+                } else {
+                    const datas = res.data
+                    if (datas.length === 0) {
+                        content.innerHTML = `  <div class="no-data"> 
+                                <i class="iconfont icon-shu2"></i> 
+                                <p>无分享图书</p>
+                                </div>`
+                    }else {
+                        const datasRender = datas.map(item=>`<li class="book" onclick="window.location.href='./detail.html?bookId=${item.bookId}&bookName=${item.bookName}&author=${item.author}&publisher=${item.publisher}&type=${item.type}&bookStatus=${item.bookStatus}'">
+                            <p class="title" >${item.bookName}</p>
+                            <p class="author">${item.author}</p>`
+                            )
+                        content.innerHTML = datasRender.join('')
+
+                    }
+
+                }
+            })
+        </script>
+    </body>
+</html>

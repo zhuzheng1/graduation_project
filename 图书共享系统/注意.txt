@@ -1,0 +1,12 @@
+对于--》book_share_system_of_college.sql《-- 文件
+
+	-->数据库名和此文件名须一致
+	-->项目使用的工具为：IDEA破解2020（如果没有idea或自己的idea无法
+				运行项目，请安装文件中附赠的idea工具）
+	
+	-->项目后端使用的是springboot整合SSM框架
+	-->数据库使用mysql
+	
+	-->项目前端使用的是html、css、js、jQuery
+
+	-->整个项目使用前后端分离实现

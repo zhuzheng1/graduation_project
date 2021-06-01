@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cx.dao.BorrowMapper">
+  <resultMap id="BaseResultMap" type="com.cx.domain.Borrow">
+    <id column="borrow_id" jdbcType="CHAR" property="borrowId" />
+    <result column="user_id" jdbcType="CHAR" property="userId" />
+    <result column="book_id" jdbcType="CHAR" property="bookId" />
+    <result column="borrow_start_time" jdbcType="TIMESTAMP" property="borrowStartTime" />
+    <result column="borrow_end_time" jdbcType="TIMESTAMP" property="borrowEndTime" />
+  </resultMap>
+
+  <resultMap id="BorrowBook" type="com.cx.domain.MyBorrow">
+    <id column="borrow_id" jdbcType="CHAR" property="borrowId" />
+    <result column="borrow_start_time" jdbcType="TIMESTAMP" property="borrowStartTime" />
+    <result column="borrow_end_time" jdbcType="TIMESTAMP" property="borrowEndTime" />
+    <association property="book" javaType="com.cx.domain.Book">
+      <id column="book_id" jdbcType="CHAR" property="bookId" />
+      <result column="book_name" jdbcType="VARCHAR" property="bookName" />
+      <result column="author" jdbcType="VARCHAR" property="author" />
+      <result column="publisher" jdbcType="VARCHAR" property="publisher" />
+      <result column="type" jdbcType="VARCHAR" property="type" />
+      <result column="book_status" jdbcType="CHAR" property="bookStatus" />
+    </association>
+  </resultMap>
+
+  <resultMap id="BorrowIdVo" type="com.cx.domain.BorrowIdVo">
+    <id column="borrow_id" jdbcType="CHAR" property="borrowId" />
+    <result column="borrow_start_time" jdbcType="TIMESTAMP" property="borrowStartTime" />
+    <result column="borrow_end_time" jdbcType="TIMESTAMP" property="borrowEndTime" />
+  </resultMap>
+
+  <select id="selectMyBorrow" resultMap="BorrowBook">
+    select b1.*,
+    b2.borrow_id,
+    b2.borrow_start_time,
+    b2.borrow_end_time
+    from book b1
+    join borrow b2
+    on b2.book_id=b1.book_id
+    where b2.user_id=#{userID} and b2.borrow_status=1
+  </select>
+
+  <select id="selectBorrowBookTimeOut" resultMap="BorrowBook">
+    select b1.*,b2.borrow_id,b2.borrow_start_time,b2.borrow_end_time
+    from book b1
+    join borrow b2
+    on b2.book_id=b1.book_id
+    where b2.user_id=#{userID} and b2.borrow_status=1 and borrow_end_time > #{time}
+  </select>
+
+  <select id="selectMyBorrowID" resultType="com.cx.domain.BorrowIdVo">
+    select b1.borrow_id borrowId,
+    b1.borrow_start_time borrowStartTime,
+    b2.book_name borrow_bookName
+    from borrow b1
+    join book b2
+    on b1.book_id=b2.book_id
+    where user_id=#{userId} and borrow_status=0
+  </select>
+
+  <select id="selectMyBorrowIDTimeOut" resultType="com.cx.domain.BorrowIdVo">
+    select b1.borrow_id borrowId,
+    b1.borrow_end_time borrowEndTime,
+    b2.book_name borrow_bookName
+    from borrow b1
+    join book b2
+    on b1.book_id=b2.book_id
+    where user_id=#{userID} and borrow_status=2
+  </select>
+
+  <insert id="saveBorrow">
+    insert into
+    borrow(
+        borrow_id,
+        user_id,
+        book_id,
+        borrow_start_time,
+        borrow_status
+    )
+    values(
+        #{borrowId},
+        #{userId},
+        #{bookId},
+        #{borrowStartTime},
+        #{borrowStatus}
+    )
+  </insert>
+
+  <update id="changeBorrowStatus">
+    update borrow set borrow_status=2 where borrow_id=#{borrowID}
+  </update>
+</mapper>

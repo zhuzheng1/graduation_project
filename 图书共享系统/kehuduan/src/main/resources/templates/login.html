@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" maximum-scale=1.0, user-scalable=0">
+        <title>图书分享系统</title>
+        <link rel="stylesheet" href="./iconfont/iconfont.css" />
+        <link rel="stylesheet" href="./common.css" />
+        <style>
+            .login-title {text-align : center;line-height: 2em;font-size: 1.5rem;}
+            .wrap {margin-top : .5em;}
+            .wrap li {
+                margin-bottom: 1.5em;
+                padding: 0 1em;
+            }
+            .wrap input {
+                display: block;
+                width: 90%;
+                padding: 0 1em;
+                height: 3em;
+                border: 1px solid rgba(0, 0, 0, 0.3);
+                border-radius: 0.3em;
+                font-size: 1rem;
+            }
+            .wrap input:focus-visible {
+                outline: none;
+                border-color: skyblue;
+            }
+            .wrap .btn {
+                display: flex;
+                justify-content: space-around;
+            }
+            .wrap .btn button {
+                display: inline-block;
+                height: 3em;
+                line-height: 3em;
+                padding: 0 1.4em;
+                border: 1px solid transparent;
+                color: #fff;
+                white-space: nowrap;
+                text-align: center;
+                font-size: 0.8rem;
+                border-radius: 0.2em;
+            }
+            .wrap #login {
+                width : 9em;
+                background-color: rgb(37, 188, 248);
+            }
+            .wrap #register {
+                width : 9em;
+                background-color: rgb(119, 247, 102);
+            }
+        
+        </style>
+    </head>
+    <body>
+        <header>图 书 分 享 系 统</header>
+        <main>
+            <div class="login-title">登入</div>
+            <div class="wrap">
+                <ul>
+                    <li>
+                        <input id="username" type="text" placeholder="用户名" />
+                    </li>
+                    <li>
+                        <input id="password" type="password" placeholder="密码" />
+                    </li>
+                </ul>
+                <div class="btn">
+                    <button id="login">登入</button>
+                    <button id="register" onclick="window.location.href='./register.html'">注册</button>
+                </div>
+            </div>
+        </main>
+        <script src="./index.js"></script>
+        <script>
+            const username = document.getElementById("username")
+            const password = document.getElementById("password")
+            document.getElementById('login').onclick = function () {
+                const usernameVal = username.value
+                const passwordVal = password.value
+                post("/test/user/login",{
+                    username : usernameVal,
+                    password : passwordVal
+                }).then(res=>{
+                    if(res.code === 0){
+                        toast("账户密码错误")
+                    }else {
+                        localStorage.setItem("userID",res.data.userID)
+                        window.location.href='./index.html'
+                    }
+                })
+            }
+        </script>
+    </body>
+</html>

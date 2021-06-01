@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cx.dao.UserMapper">
+    <resultMap id="BaseResultMap" type="com.cx.domain.User">
+        <id column="user_id" jdbcType="CHAR" property="user_id" />
+        <result column="username" jdbcType="VARCHAR" property="username" />
+        <result column="real_name" jdbcType="VARCHAR" property="real_name" />
+        <result column="phone" jdbcType="VARCHAR" property="phone" />
+        <result column="s_number" jdbcType="VARCHAR" property="s_number" />
+    </resultMap>
+
+  <select id="selectByNameAndPWD" resultType="java.lang.String">
+    select user_id from user where username=#{username} and password=#{password}
+  </select>
+
+  <select id="selectBaseInformation" parameterType="java.lang.String" resultType="map">
+    select username,real_name,phone,s_number from user where user_id=#{userID}
+  </select>
+
+  <insert id="register">
+    insert into
+    user(
+        user_id,
+        username,
+        password,
+        real_name,
+        sex,
+        phone,
+        s_number,
+        authority
+    )
+    values(
+        #{user_id},
+        #{username},
+        #{password},
+        #{real_name},
+        #{sex},
+        #{phone},
+        #{s_number},
+        ${authority}
+    )
+  </insert>
+
+  <update id="changePWD">
+    update user set
+    <if test="newPWD != null">
+      password=#{newPWD}
+    </if> where username=#{oldUsername} and password=#{oldPWD}
+  </update>
+
+</mapper>

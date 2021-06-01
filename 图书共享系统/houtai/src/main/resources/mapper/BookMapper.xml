@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cx.dao.BookMapper">
+  <resultMap id="BaseResultMap" type="com.cx.domain.Book">
+    <id column="book_id" jdbcType="CHAR" property="bookId" />
+    <result column="book_name" jdbcType="VARCHAR" property="bookName" />
+    <result column="author" jdbcType="VARCHAR" property="author" />
+    <result column="publisher" jdbcType="VARCHAR" property="publisher" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="book_status" jdbcType="CHAR" property="bookStatus" />
+  </resultMap>
+
+  <select id="selectAbleBorrow" resultMap="BaseResultMap">
+    select * from book where book_status="在平台待借";
+  </select>
+
+  <select id="selectDistinct" resultType="java.lang.String">
+    select book_id from book where book_name=#{bookName} and author=#{author} and publisher=#{publisher} and type=#{type}
+  </select>
+
+  <select id="selectDistinctBorrow" resultType="java.lang.String">
+    select book_status from book where book_id=#{bookId}
+  </select>
+
+  <select id="selectBookStatus" resultType="java.lang.String">
+    select book_status from book where book_id=#{bookID}
+  </select>
+
+  <update id="updateBackBookStatus">
+    update book set book_status='在平台待借'
+  </update>
+
+  <delete id="deleteShareBook">
+    delete from book where book_id=#{bookID}
+  </delete>
+</mapper>

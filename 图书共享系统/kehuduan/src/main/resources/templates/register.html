@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" maximum-scale=1.0, user-scalable=0">
+        <title>图书分享系统</title>
+        <link rel="stylesheet" href="./iconfont/iconfont.css" />
+        <link rel="stylesheet" href="./common.css" />
+        <style>
+            .login-title {text-align : center;line-height: 2em;font-size: 1.5rem;}
+            .wrap {margin-top : .5em;}
+            .wrap li {
+                margin-bottom: 1.5em;
+                padding: 0 1em;
+            }
+            
+            .wrap input {
+                display: block;
+                width: 90%;
+                padding: 0 1em;
+                height: 3em;
+                border: 1px solid rgba(0, 0, 0, 0.3);
+                border-radius: 0.3em;
+                font-size: 1rem;
+            }
+            .wrap input:focus-visible {
+                outline: none;
+                border-color: skyblue;
+            }
+            .radio {font-size: 1.15rem;text-align: left;color:#333;display: flex;justify-content: space-around;}
+            .radio > div {display: flex;justify-content:center;}
+            .radio input {width:1em;margin-left:1em;}
+            
+            .wrap .btn {
+                display: flex;
+                justify-content: space-around;
+            }
+            .wrap .btn button {
+                display: inline-block;
+                height: 3em;
+                line-height: 3em;
+                padding: 0 1.4em;
+                border: 1px solid transparent;
+                color: #fff;
+                white-space: nowrap;
+                text-align: center;
+                font-size: 0.8rem;
+                border-radius: 0.2em;
+            }
+            .wrap #register {
+                width : 9em;
+                background-color: rgb(37, 188, 248);
+            }
+       
+        
+        </style>
+    </head>
+    <body>
+        <header>图 书 分 享 系 统</header>
+        <main>
+            <div class="login-title">注册</h2>
+            <div class="wrap">
+                <ul>
+                    <li>
+                        <input id="username" type="text" placeholder="用户名" />
+                    </li>
+                    <li>
+                        <input id="password" type="password" placeholder="密码" />
+                    </li>
+                    <li>
+                        <input id="repassword" type="password" placeholder="确认密码" />
+                    </li>
+                    <li>
+                        <input id="real_name" type="text" placeholder="真实姓名" />
+                    </li>
+                    <li>
+                        <input id="phone" type="text" placeholder="电话号码" />
+                    </li>
+                    <li>
+                        <input id="s_number" type="text" placeholder="学号" />
+                    </li>
+                    <li class="radio">
+                        <span>性别：</span>
+                        <div>
+                            <label for="man">男</label>
+                            <input id="man" type="radio" name="sex" checked="checked">
+                        </div>
+                        <div>  
+                            <label for="woman">女</label>
+                            <input id="woman" type="radio" name="sex">
+                        </div>
+                    </li>
+                </ul>
+                <div class="btn">
+                    <button id="register">注册</button>
+                </div>
+            </div>
+        </main>
+        <script src="./index.js"></script>
+        <script>
+            const username = document.getElementById("username")
+            const password = document.getElementById("password")
+            const repassword = document.getElementById("repassword")
+            const real_name = document.getElementById("real_name")
+            const phone = document.getElementById("phone")
+            const s_number = document.getElementById("s_number")
+            const sex = document.getElementById("man")
+            document.getElementById('register').onclick = function () {
+                const usernameVal = username.value
+                const passwordVal = password.value
+                const repasswordVal = repassword.value
+                const real_nameVal = real_name.value
+                const phoneVal = phone.value
+                const s_numberVal = s_number.value
+                const sexVal = sex.checked ? '男' : '女'
+                if(!usernameVal || !passwordVal || !repasswordVal || !real_nameVal || !phoneVal || !s_numberVal){
+                    toast("输入框不能为空")
+                    return 
+                }
+                if(passwordVal !== repasswordVal){
+                    toast("两次密码不一致")
+                    return
+                }
+                post("/test/user/register",{
+                    username : usernameVal,
+                    password : passwordVal,
+                    real_name : real_nameVal,
+                    phone : phoneVal,
+                    s_number : s_numberVal,
+                    sex : sexVal
+                }).then(res=>{
+                    if(res.code === 0 ) {
+                        toast("用户名以拥有");
+                    }else {
+                        window.location.href = "./login.html"
+                    }
+                })
+            }
+        </script>
+    </body>
+</html>

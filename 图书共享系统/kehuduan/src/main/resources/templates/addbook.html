@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" maximum-scale=1.0, user-scalable=0">
+    <title>图书分享系统</title>
+    <link rel="stylesheet" href="./iconfont/iconfont.css">
+    <link rel="stylesheet" href="./common.css">
+    <style>
+        .wrap li{margin-bottom: 1.5em;padding: 0 1em; }
+        .wrap label{  display: block; padding: 1em 0; font-weight: 400; line-height: 1.2em;color: #333; }
+        .wrap input{display: block; width: 90%; padding:0 1em;height: 3em;border: 1px solid rgba(0,0,0,.3);border-radius: .3em;font-size:1rem;}
+        .wrap input:focus-visible{outline:none;border-color: skyblue;}
+        .wrap .btn{display : flex;justify-content: space-around;}
+        .wrap .btn button {display: inline-block;height: 3em;line-height: 3em;padding: 0 1.4em;border: 1px solid transparent;color: #fff;white-space: nowrap;text-align: center;font-size: 0.8rem;border-radius: 0.2em;}
+        .wrap #ok{  background-color: rgb(37, 188, 248);}
+        .wrap #cancel{  background-color: rgb(247, 108, 108);}
+    </style>
+</head>
+<body>
+    <header >分享图书</header>
+    <main>
+        <div class="wrap">
+            <ul>
+                <li> 
+                    <label for="bookName">书名 :</label>
+                    <input id="bookName" type="text" placeholder="请输入"/>
+                </li>
+                <li> 
+                    <label for="author">作者 :</label>
+                    <input id="author" type="text" placeholder="请输入"/>
+                </li>
+                <li> 
+                    <label for="publisher">出版社 :</label>
+                    <input id="publisher" type="text" placeholder="请输入"/>
+                </li>
+                <li> 
+                    <label for="type">书籍类型 :</label>
+                    <input id="type" type="text" placeholder="请输入"/>
+                </li>
+            </ul>
+            <div class="btn">
+                <button id="ok">确认</button>
+                <button onclick="window.location.href='./share.html'" id="cancel">取消</button>
+            </div>
+        </div>
+    </main>
+    <script src="./index.js"></script>
+    <script> 
+        const bookName = document.getElementById("bookName")
+        const author = document.getElementById("author")
+        const publisher = document.getElementById("publisher")
+        const type = document.getElementById("type")
+        document.getElementById("ok").onclick = function (){
+            const bookName_val = bookName.value;
+            const author_val = author.value;
+            const publisher_val = publisher.value;
+            const type_val = type.value;
+            if(!bookName_val || !author_val || !publisher_val || !type_val){
+                toast("不能为空")
+            }else {
+                post("/test/user/share",{
+                    bookName : bookName_val,
+                    author : author_val,
+                    publisher : publisher_val,
+                    type  : type_val,
+                    userID : localStorage.getItem("userID")
+                }).then(res=>{
+                    if(res.code === 0){
+                        toast("分享失败")
+                    }else {
+                        toast("分享成功")
+                        setTimeout(()=>{
+                            window.location.href = "./share.html"
+                        }, 2000)
+                    }
+                })
+            }
+        }
+    </script>
+   
+   
+</body>
+</html>

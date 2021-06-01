@@ -1,0 +1,69 @@
+header {
+    position: fixed;
+    top : 0;
+    z-index: 10;
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+    background-color: #393D49;
+    color: #fff;
+    font-size: 20px;
+}
+.search {
+    position: absolute;
+    top : 0px;
+    right: 50px;
+    height: 18px;
+}
+.search button {
+    margin-left: 30px;
+}
+#search {
+    border-radius: 20px;
+    text-indent: 10px;
+    padding : 5px;
+}
+
+.nav {
+    padding-top : 60px;
+    z-index: 9;
+}
+html,body {
+    width: 100%;
+    height: 100%;
+    overflow:hidden;
+}
+main {
+    margin : 60px 0 0 200px;
+    width: calc(100% - 60px);
+    height: calc(100% - 60px);
+}
+.layui-form.layui-border-box.layui-table-view{
+    margin-top : 0;
+}
+
+.model {
+    display: none;
+    width : 100%;
+    height : 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+.model > div {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width : 200px;
+    height : 100px;
+    background-color: rgba(0, 0, 0, .3);
+    text-align: center;
+    padding: 20px;
+    color : #fff;
+    border-radius: 10px;
+}
+.model > div>input {
+    width : 200px;
+    margin: 10px auto;
+}

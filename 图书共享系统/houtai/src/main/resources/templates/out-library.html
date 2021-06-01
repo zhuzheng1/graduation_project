@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>图书分享后台管理系统</title>
+        <link rel="stylesheet" href="./layui/css/layui.css" />
+        <link rel="stylesheet" href="./common.css" />
+    </head>
+    <body>
+        <script>
+            if(!localStorage.getItem("adminID")) window.location.href = './login.html'
+        </script>
+        <header>图 书 分 享 后 台 管 理 系 统<div class="search">
+            <input type="text" id="search" placeholder="输入书名进行查询" />
+            <button class="layui-btn layui-btn-danger">退出登录</button>
+        </div></header>
+        <ul class="layui-nav layui-nav-tree nav layui-nav-side" lay-filter="test">
+            <!-- 侧边导航: <ul class="layui-nav layui-nav-tree layui-nav-side"> -->
+            <li class="layui-nav-item">
+                <a href="./index.html">用户管理</a>
+            </li>
+            <li class="layui-nav-item">
+                <a href="javascript:;">审核中</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="./share-check.html">分享审核中</a></dd>
+                    <dd><a href="./borrow-check.html">借阅审核中</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a href="./in-library.html">在库图书</a></li>
+            <li class="layui-nav-item layui-nav-itemed"><a href="javascript:;">借出图书</a></li>
+            <li class="layui-nav-item"><a href="./return-book.html">还书</a></li>
+            <li class="layui-nav-item"><a href="./get-book.html">取书</a></li>
+            <li class="layui-nav-item"><a href="./back-book-timeout.html">超时未还</a></li>
+            <li class="layui-nav-item"><a href="./get-book-timeout.html">超时未取</a></li>
+        </ul>
+        <main>
+            <table id="demo" lay-filter="test" class="table"></table>
+        </main>
+        <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+        <script src="./layui/layui.js"></script>
+        <script src="./index.js"></script>
+        <script>
+            layui.use('table', function () {
+                const table = layui.table
+                const num = ($('main').height() / 40) | 0
+                const width = $('main').width() / 5 | 0
+                //第一个实例
+                table.render({
+                    elem: '#demo',
+                    limit : num - 1,
+                    url: '/test/admin/lend', //数据接口
+                    response: {
+                        statusName: 'code' //规定数据状态的字段名称，默认：code
+                        ,statusCode: 200 //规定成功的状态码，默认：0
+                    } 
+                    ,page: {
+                        layout: [  'prev', 'page', 'next','count'] //自定义分页布局
+                        ,groups: 5 //只显示 1 个连续页码
+                        ,first: false //不显示首页
+                        ,last: false //不显示尾页
+                    },
+                    cols: [
+                        [
+                            //表头
+                            { field: 'bookId', title: 'ID' ,width},
+                            { field: 'bookName', title: '书名' ,width},
+                            { field: 'author', title: '作者' ,width},
+                            { field: 'publisher', title: '出版社' ,width},
+                            { field: 'type', title: '书籍类型',width }
+                        ]
+                    ]
+                })
+                $("#search").change(function (e) {
+                    tableIns.reload({ 
+                        url : '/test/admin/select_lend',
+                        where:{
+                            bookName : $("#search").val(),
+                        }
+                    })
+                 
+                })
+            })
+        </script>
+    </body>
+</html>

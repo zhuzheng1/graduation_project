@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cx.dao.ShareMapper">
+  <resultMap id="BaseResultMap" type="com.cx.domain.Share">
+    <id column="share_book_id" jdbcType="CHAR" property="shareBookId" />
+    <result column="user_id" jdbcType="CHAR" property="userId" />
+    <result column="book_id" jdbcType="CHAR" property="bookId" />
+    <result column="share_time" jdbcType="TIMESTAMP" property="shareTime" />
+    <result column="back_time" jdbcType="TIMESTAMP" property="backTime" />
+  </resultMap>
+
+  <resultMap id="ShareBook" type="com.cx.domain.MyShare">
+    <id column="share_book_id" jdbcType="CHAR" property="shareBookId" />
+    <result column="share_time" jdbcType="TIMESTAMP" property="shareTime" />
+    <result column="back_time" jdbcType="TIMESTAMP" property="backTime" />
+    <association property="book" javaType="com.cx.domain.Book">
+      <id column="book_id" jdbcType="CHAR" property="bookId" />
+      <result column="book_name" jdbcType="VARCHAR" property="bookName" />
+      <result column="author" jdbcType="VARCHAR" property="author" />
+      <result column="publisher" jdbcType="VARCHAR" property="publisher" />
+      <result column="type" jdbcType="VARCHAR" property="type" />
+      <result column="book_status" jdbcType="CHAR" property="bookStatus" />
+    </association>
+  </resultMap>
+
+    <resultMap id="ShareIdVo" type="com.cx.domain.ShareIdVo">
+        <id column="share_book_id" jdbcType="CHAR" property="shareBookId" />
+        <result column="share_time" jdbcType="TIMESTAMP" property="shareTime" />
+        <result column="back_time" jdbcType="TIMESTAMP" property="backTime" />
+    </resultMap>
+
+  <select id="selectMyShare" resultMap="ShareBook">
+    select b.*,s.share_book_id,s.share_time,s.back_time
+    from book b
+    join share s
+    on s.book_id=b.book_id
+    where s.user_id=#{userID} and s.share_status=1
+  </select>
+
+    <select id="selectShareBookTimeOut" resultMap="ShareBook">
+    select b.*,s.share_book_id,s.share_time,s.back_time
+    from book b
+    join share s
+    on s.book_id=b.book_id
+    where s.user_id=#{userID} and s.share_status=1 and back_time > #{time}
+  </select>
+
+    <select id="selectMyShareID" resultType="com.cx.domain.ShareIdVo">
+        select s.share_book_id shareBookId,
+        s.share_time shareTime,
+        b.book_name share_bookName
+        from share s
+        join book b
+        on s.book_id=b.book_id
+        where user_id=#{userId} and share_status=0
+    </select>
+
+    <select id="selectMyShareIDTimeOut" resultType="com.cx.domain.ShareIdVo">
+        select s.share_book_id shareBookId,
+        s.back_time backTime,
+        b.book_name share_bookName
+        from share s
+        join book b
+        on s.book_id=b.book_id
+        where user_id=#{userID} and share_status=2
+    </select>
+
+  <insert id="shareBook">
+    insert into book(
+        book_id,
+        book_name,
+        author,
+        publisher,
+        type,
+        book_status
+    )
+    values(
+        #{bookId},
+        #{bookName},
+        #{author},
+        #{publisher},
+        #{type},
+        #{bookStatus}
+    )
+  </insert>
+
+    <insert id="saveMyShareRecord">
+    insert into share(
+        share_book_id,
+        user_id,
+        book_id,
+        share_time,
+        share_status
+    )
+    values(
+        #{shareBookId},
+        #{userId},
+        #{bookId},
+        #{shareTime},
+        #{shareStatus}
+    )
+  </insert>
+
+    <update id="changeShareStatus">
+        update share set share_status=2 where share_book_id=#{shareID}
+    </update>
+
+</mapper>

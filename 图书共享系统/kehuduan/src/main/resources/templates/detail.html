@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图书分享系统</title>
+    <link rel="stylesheet" href="./common.css">
+    <style>
+            main .user-info {
+                padding: 1em;
+            }
+            main .user-info p {
+                margin-bottom: 0.5em;
+            }
+            main .user-info .username {
+                font-size: 1.5em;
+                color: #333;
+            }
+            main .user-info .tel {
+                font-size: 1em;
+                color: gray;
+            }
+            main .btn {
+                display: flex;
+                justify-content: space-around;
+            }
+            main .btn button {
+                display: inline-block;
+                height: 3em;
+                line-height: 3em;
+                padding: 0 1.4em;
+                border: 1px solid transparent;
+                color: #fff;
+                white-space: nowrap;
+                text-align: center;
+                font-size: 0.8rem;
+                border-radius: 0.2em;
+            }
+            main #order {
+                width : 9em;
+                background-color: rgb(37, 188, 248);
+            }
+            main #back {
+                width : 9em;
+                background-color: rgb(231, 70, 70);
+            }
+    </style>
+</head>
+<body>
+    <header>图 书 分 享 系 统</header>
+    <main>
+        <div class="user-info">
+            <p class="username" id="bookName">红楼梦</p>
+            <p class="tel" id="author">作者 : 曹雪芹</span></p>
+            <p class="tel" id="publisher"">出版社 : 明清出版社</p>
+            <p class="tel" id="type">书籍类型 : 小说</p>
+            <p class="tel" id="bookStatus">书籍状态 : </p>
+            <p class="tel" id="borrowStartTime"></p>
+            <p class="tel" id="borrowEndTime"></p>
+            <p class="tel" id="shareTime"></p>
+            <p class="tel" id="backTime"></p>
+        </div>
+        <div class="btn">
+            <button id="order">借阅</button>
+            <button id="back" onclick="history.go(-1)">返回</button>
+        </div>
+    </main>
+
+    <script src="./index.js"></script>
+    <script>
+        function insert(name,value,pre){
+            document.getElementById(name).innerHTML = pre + ' : '+ value
+        }
+        const bookName =  getQueryVariable("bookName")
+        const bookId =  getQueryVariable("bookId")
+        const author =  getQueryVariable("author")
+        const publisher =  getQueryVariable("publisher")
+        const type =  getQueryVariable("type")
+        const bookStatus =  getQueryVariable("bookStatus")
+        document.getElementById("bookName").innerHTML = bookName
+        insert('author',author,'作者')
+        insert('publisher',publisher,'出版社')
+        insert('type',type,'书籍类型')
+        insert('bookStatus',bookStatus,'书籍状态')
+
+        // may this is undefined
+        const  borrowId =  getQueryVariable("borrowId")
+        const  shareBookId =  getQueryVariable("shareBookId")
+        const  borrowStartTime =  getQueryVariable("borrowStartTime")
+        if(borrowStartTime) ('borrowStartTime',borrowStartTime,'借阅开始时间')
+        const  borrowEndTime =  getQueryVariable("borrowEndTime")
+        if(borrowEndTime) ('borrowEndTime',borrowEndTime,'借阅结束时间')
+        const  shareTime =  getQueryVariable("shareTime")
+        if(shareTime) ('shareTime',shareTime,'分享开始时间')
+        const  backTime =  getQueryVariable("backTime")
+        if(backTime) ('backTime',backTime,'分享结束时间')
+        const order = document.getElementById('order')
+        if(!borrowId && !shareBookId){
+            order.innerHTML = '借阅'
+            order.onclick = function(){
+                post("/test/user/borrow",{
+                    bookId : bookId,
+                    userID : localStorage.getItem("userID")
+                }).then(function(res){
+                    if(res.code === 0){
+                        toast("数据提交失败")
+                    }else {
+                        toast("借阅请求发送成功")
+                        setTimeout(function(){
+                            window.history.go(-1)
+                        },2000)
+                    }
+                })
+            }
+        }else if(shareBookId){
+            order.innerHTML = '取书'
+            order.onclick = function(){
+                post("/test/user/get_book",{
+                    shareID : shareBookId
+                }).then(function(res){
+                    if(res.code === 0){
+                        toast("数据提交失败")
+                    }else {
+                        toast("取书请求发送成功")
+                        setTimeout(function(){
+                            window.history.go(-1)
+                        },2000)
+                    }
+                })
+            }
+        }else if(borrowId){
+            order.innerHTML = '还书'
+            order.onclick = function(){
+                post("/test/user/return_book",{
+                    borrowID : borrowId
+                }).then(function(res){
+                    if(res.code === 0){
+                        toast("数据提交失败")
+                    }else {
+                        toast("还书请求发送成功")
+                        setTimeout(function(){
+                            window.history.go(-1)
+                        },2000)
+                    }
+                })
+            }
+        }
+    </script>
+</body>
+</html>

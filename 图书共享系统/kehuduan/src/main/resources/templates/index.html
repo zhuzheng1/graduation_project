@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" maximum-scale=1.0, user-scalable=0">
+        <title>图书分享系统</title>
+        <link rel="stylesheet" href="./iconfont/iconfont.css" />
+        <link rel="stylesheet" href="./common.css" />
+        <style>
+            header .fliter {
+                position: absolute;
+                right: 1rem;
+            }
+            .popup {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                padding: 0.5em 1em 2em;
+                background: rgba(230, 230, 230, 0.5);
+                border-radius: 1em;
+                list-style: none;
+            }
+            .popup li {
+                text-align: center;
+                border-bottom: 0.1rem solid rgba(200, 200, 200, 0.9);
+                padding: 0.5rem 0;
+            }
+            .popup .iconfont {
+                position: absolute;
+                font-size: 1.5rem;
+                left: 50%;
+                bottom: 0.1em;
+                transform: translateX(-50%);
+            }
+            .share-book-list >  p,.borrow-book-list > p{
+                margin : 1em 0;
+                text-align: center;
+            }
+           
+        </style>
+    </head>
+    <body>
+        <script>
+            if(!localStorage.getItem("userID")) window.location.href='./login.html'
+        </script>
+        <header>图 书 分 享 系 统</header>
+        <main>
+            <div class="share-book-list">
+                <p>分享图书</p>
+                <ul class="book-list">
+
+                </ul>
+            </div>
+            <div class="borrow-book-list">
+                <p>借阅图书</p>
+                <ul class="book-list">
+
+                </ul>
+            </div>
+         
+        </main>
+        <div class="bottom-nav">
+            <ul>
+                <li class="icon active"><i class="iconfont icon-shu"></i><span>个人书籍</span></li>
+                <li class="icon" onclick="window.location.href='./share.html'"><i class="iconfont icon-shu1"></i><span>大家分享</span></li>
+                <li class="icon" onclick="window.location.href='./user.html'"><i class="iconfont icon-ren"></i><span>个人中心</span></li>
+            </ul>
+        </div>
+
+        <script src="./index.js"></script>
+        <script>
+            const shareContainer = document.querySelector('.share-book-list .book-list')
+            const borrowContainer = document.querySelector('.borrow-book-list .book-list')
+            get('/test/user/share_borrow', {
+                userID: localStorage.getItem('userID')
+            }).then((res) => {
+                if (res.code === 0) {
+                    toast('书本获取异常')
+                } else {
+                    const myBorrow = res.data.myBorrow
+                    if (myBorrow.length === 0) {
+                        borrowContainer.innerHTML = `  <div class="no-data"> 
+                                <i class="iconfont icon-shu2"></i> 
+                                <p>无个人分享图书</p>
+                                </div>`
+                    }else {
+                        const myBorrowRender = myBorrow.map(item=>`<li class="book"onclick="window.location.href='./detail.html?borrowId=${item.borrowId}&borrowStartTime=${item.borrowStartTime}&borrowEndTime=${item.borrowEndTime}&bookId=${item.book.bookId}&bookName=${item.book.bookName}&author=${item.book.author}&publisher=${item.book.publisher}&type=${item.book.type}&bookStatus=${item.book.bookStatus}&'"
+                        >
+                        <p class="title">${item.book.bookName}</p>
+                        <p class="author">${item.book.author}</p>
+                        <p class="status">${(new Date(item.borrowEndTime).getTime() < new Date().getTime() ) ? "以超时" : ''}</p>
+                    </li>
+                    `).join('')
+                    borrowContainer.innerHTML = myBorrowRender
+                    }
+
+                    const myShare = res.data.myShare
+                    if (myShare.length === 0) {
+                        shareContainer.innerHTML = `  <div class="no-data"> 
+                                <i class="iconfont icon-shu2"></i> 
+                                <p>无个人分享图书</p>
+                                </div>`
+                    }else {
+                        const myShareRender = myShare.map(item=>`<li class="book"onclick="window.location.href='./detail.html?shareBookId=${item.shareBookId}&shareTime=${item.shareTime}&backTime=${item.backTime}&bookId=${item.book.bookId}&bookName=${item.book.bookName}&author=${item.book.author}&publisher=${item.book.publisher}&type=${item.book.type}&bookStatus=${item.book.bookStatus}&'"
+                        >
+                        <p class="title">${item.book.bookName}</p>
+                        <p class="author">${item.book.author}</p>
+                        <p class="status">${(new Date(item.backTime).getTime() < new Date().getTime() ) ? "以超时" : ''}</p>
+                    </li>
+                    `).join('')
+                    shareContainer.innerHTML = myShareRender
+                    }
+                }
+            })
+        </script>
+
+    </body>
+</html>

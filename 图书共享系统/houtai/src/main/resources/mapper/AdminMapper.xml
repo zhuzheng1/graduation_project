@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cx.dao.AdminMapper">
+  <resultMap id="BaseResultMap" type="com.cx.domain.Admin">
+    <id column="admin_id" jdbcType="CHAR" property="adminId" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="real_name" jdbcType="VARCHAR" property="realName" />
+    <result column="sex" jdbcType="CHAR" property="sex" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="s_number" jdbcType="VARCHAR" property="sNumber" />
+    <result column="authority" jdbcType="INTEGER" property="authority" />
+  </resultMap>
+
+    <resultMap id="UserMap" type="com.cx.domain.User">
+        <id column="user_id" jdbcType="CHAR" property="user_id" />
+        <result column="username" jdbcType="VARCHAR" property="username" />
+        <result column="password" jdbcType="VARCHAR" property="password" />
+        <result column="real_name" jdbcType="VARCHAR" property="real_name" />
+        <result column="sex" jdbcType="CHAR" property="sex" />
+        <result column="phone" jdbcType="VARCHAR" property="phone" />
+        <result column="s_number" jdbcType="VARCHAR" property="s_number" />
+        <result column="authority" jdbcType="INTEGER" property="authority"/>
+    </resultMap>
+
+    <resultMap id="BookMap" type="com.cx.domain.Book">
+        <id column="book_id" jdbcType="CHAR" property="bookId" />
+        <result column="book_name" jdbcType="VARCHAR" property="bookName" />
+        <result column="author" jdbcType="VARCHAR" property="author" />
+        <result column="publisher" jdbcType="VARCHAR" property="publisher" />
+        <result column="type" jdbcType="VARCHAR" property="type" />
+        <result column="book_status" jdbcType="CHAR" property="bookStatus" />
+    </resultMap>
+
+    <select id="aaa" resultType="com.cx.domain.BorrowUnderReview">
+        select
+        s.borrow_id,
+        s.borrow_start_time,
+        s.user_id borrow_userID,
+        u.username borrow_username,
+        u.phone borrow_phone,
+        u.s_number borrow_s_number,
+        b.book_name borrow_bookName
+        from borrow s
+        join user u
+        on s.user_id=u.user_id
+        join book b
+        on s.book_id=b.book_id
+        where borrow_status=0
+    </select>
+
+    <select id="bbb" resultType="int">
+        select count(*) from borrow where borrow_status=0
+    </select>
+
+  <select id="selectByNameAndPWD" resultType="java.lang.String">
+    select admin_id from admin where username=#{username} and password=#{password}
+  </select>
+
+    <select id="selectAllUser" resultMap="UserMap">
+        select * from user limit #{page},#{limit};
+    </select>
+
+    <select id="selectUserCount" resultType="int">
+        select count(*) from user;
+    </select>
+
+    <select id="selectAllShareUnderReview" resultType="com.cx.domain.ShareUnderReview">
+        select
+        s.share_book_id,
+        s.share_time,
+        s.user_id share_userID,
+        u.username share_username,
+        u.phone share_phone,
+        u.s_number share_s_number,
+        b.book_name share_bookName
+        from share s
+        join user u
+        on s.user_id=u.user_id
+        join book b
+        on s.book_id=b.book_id
+        where share_status=0 limit #{page},#{limit}
+    </select>
+
+    <select id="selectShareUnderReviewCount" resultType="int">
+        select count(*) from share where share_status=0
+    </select>
+
+    <select id="selectUserShareByShareID" resultType="com.cx.domain.ShareUnderReview">
+        select
+        s.share_book_id,
+        s.share_time,
+        s.user_id share_userID,
+        u.username share_username,
+        u.phone share_phone,
+        u.s_number share_s_number,
+        b.book_name share_bookName
+        from share s
+        join user u
+        on s.user_id=u.user_id
+        join book b
+        on s.book_id=b.book_id
+        where s.share_book_id like '%' #{shareID} '%' and share_status=0
+    </select>
+
+    <select id="selectShareBookID" resultType="java.lang.String">
+        select book_id from share where share_book_id=#{shareID}
+    </select>
+
+
+    <select id="selectAllBorrowUnderReview" resultType="com.cx.domain.BorrowUnderReview">
+        select
+        s.borrow_id,
+        s.borrow_start_time,
+        s.user_id borrow_userID,
+        u.username borrow_username,
+        u.phone borrow_phone,
+        u.s_number borrow_s_number,
+        b.book_name borrow_bookName
+        from borrow s
+        join user u
+        on s.user_id=u.user_id
+        join book b
+        on s.book_id=b.book_id
+        where borrow_status=0 limit #{page},#{limit}
+    </select>
+
+    <select id="selectBorrowUnderReviewCount" resultType="int">
+        select count(*) from borrow where borrow_status=0
+    </select>
+
+    <select id="selectBackBook" resultType="com.cx.domain.BackBook">
+        select
+        s.borrow_id back_borrow_id,
+        s.borrow_start_time back_borrow_start_time,
+        s.user_id back_borrow_userID,
+        u.username back_borrow_username,
+        u.phone back_borrow_phone,
+        u.s_number back_borrow_s_number,
+        b.book_name back_borrow_bookName
+        from borrow s
+        join user u
+        on s.user_id=u.user_id
+        join book b
+        on s.book_id=b.book_id
+        where borrow_status=2 limit #{page},#{limit}
+    </select>
+
+    <select id="selectBackBookCount" resultType="int">
+        select count(*) from borrow where borrow_status=2
+    </select>
+
+    <select id="backBookSelect" resultType="com.cx.domain.BackBook">
+        select
+        s.borrow_id back_borrow_id,
+        s.borrow_start_time back_borrow_start_time,
+        s.user_id back_borrow_userID,
+        u.username back_borrow_username,
+        u.phone back_borrow_phone,
+        u.s_number back_borrow_s_number,
+        b.book_name back_borrow_bookName
+        from borrow s
+        join user u
+        on s.user_id=u.user_id
+        join book b
+        on s.book_id=b.book_id
+        where s.borrow_status=2 and b.book_name like '%' #{borrowID} '%'
+    </select>
+
+    <!--还书完成,没有超时-->
+    <select id="selectIsTimeOut" resultType="java.lang.String">
+        select book_id from borrow where borrow_id=#{borrowID} and borrow_end_time >= #{nowTime}
+    </select>
+
+    <select id="selectGetBook" resultType="com.cx.domain.GetBook">
+        select
+        s.share_book_id get_share_book_id,
+        s.share_time get_share_time,
+        s.user_id get_share_userID,
+        u.username get_share_username,
+        u.phone get_share_phone,
+        u.s_number get_share_s_number,
+        b.book_name get_share_bookName
+        from share s
+        join user u
+        on s.user_id=u.user_id
+        join book b
+        on s.book_id=b.book_id
+        where share_status=2 limit #{page},#{limit}
+    </select>
+
+    <select id="selectGetBookCount" resultType="int">
+        select count(*) from share where share_status=2
+    </select>
+
+    <select id="getBookSelect" resultType="com.cx.domain.GetBook">
+        select
+        s.share_book_id get_share_book_id,
+        s.share_time get_share_time,
+        s.user_id get_share_userID,
+        u.username get_share_username,
+        u.phone get_share_phone,
+        u.s_number get_share_s_number,
+        b.book_name get_share_bookName
+        from share s
+        join user u
+        on s.user_id=u.user_id
+        join book b
+        on s.book_id=b.book_id
+        where s.share_status=2 and b.book_name like '%' #{shareID} '%'
+    </select>
+
+    <select id="selectShareIsTimeOut" resultType="java.lang.String">
+        select book_id from share where share_book_id=#{shareID} and back_time >= #{nowTime}
+    </select>
+
+    <select id="selectBackBookTimeOut" resultType="com.cx.domain.BackBook">
+        select
+        s.borrow_id back_borrow_id,
+        s.borrow_end_time back_borrow_end_time,
+        s.user_id back_borrow_userID,
+        u.username back_borrow_username,
+        u.phone back_borrow_phone,
+        u.s_number back_borrow_s_number,
+        b.book_name back_borrow_bookName
+        from borrow s
+        join user u
+        on s.user_id=u.user_id
+        join book b
+        on s.book_id=b.book_id
+        where s.borrow_status=1 and s.borrow_end_time &lt;= #{nowTime} limit #{page},#{limit}
+    </select>
+
+    <select id="selectBackBookTimeOutCount" resultType="int">
+        select count(*) from borrow where borrow_status=1 and borrow_end_time &lt;= #{nowTime}
+    </select>
+
+    <select id="backBookTimeOutSelect" resultType="com.cx.domain.BackBook">
+        select
+        s.borrow_id back_borrow_id,
+        s.borrow_end_time back_borrow_end_time,
+        s.user_id back_borrow_userID,
+        u.username back_borrow_username,
+        u.phone back_borrow_phone,
+        u.s_number back_borrow_s_number,
+        b.book_name back_borrow_bookName
+        from borrow s
+        join user u
+        on s.user_id=u.user_id
+        join book b
+        on s.book_id=b.book_id
+        where s.borrow_status=1 and s.borrow_end_time &lt;= #{nowTime} and s.borrow_id like '%' #{borrowID} '%'
+    </select>
+
+    <select id="selectGetBookTimeOut" resultType="com.cx.domain.GetBook">
+        select
+        s.share_book_id get_share_book_id,
+        s.back_time get_back_time,
+        s.user_id get_share_userID,
+        u.username get_share_username,
+        u.phone get_share_phone,
+        u.s_number get_share_s_number,
+        b.book_name get_share_bookName
+        from share s
+        join user u
+        on s.user_id=u.user_id
+        join book b
+        on s.book_id=b.book_id
+        where s.share_status=1 and s.back_time &lt; #{nowTime} limit #{page},#{limit}
+    </select>
+
+    <select id="selectGetBookTimeOutCount" resultType="int">
+        select count(*) from share where share_status=1 and back_time &lt;= #{nowTime}
+    </select>
+
+    <select id="getBookTimeOutSelect" resultType="com.cx.domain.GetBook">
+        select
+        s.share_book_id get_share_book_id,
+        s.back_time get_back_time,
+        s.user_id get_share_userID,
+        u.username get_share_username,
+        u.phone get_share_phone,
+        u.s_number get_share_s_number,
+        b.book_name get_share_bookName
+        from share s
+        join user u
+        on s.user_id=u.user_id
+        join book b
+        on s.book_id=b.book_id
+        where s.share_status=1 and s.back_time &lt;= #{nowTime} and s.share_book_id like '%' #{shareID} '%'
+    </select>
+
+    <select id="selectUserBorrowByBorrowID" resultType="com.cx.domain.BorrowUnderReview">
+        select
+        s.borrow_id,
+        s.borrow_start_time,
+        s.user_id borrow_userID,
+        u.username borrow_username,
+        u.phone borrow_phone,
+        u.s_number borrow_s_number,
+        b.book_name borrow_bookName
+        from borrow s
+        join user u
+        on s.user_id=u.user_id
+        join book b
+        on s.book_id=b.book_id
+        where s.borrow_id like '%' #{borrowID} '%' and borrow_status=0
+    </select>
+
+    <select id="selectBorrowBookID" resultType="java.lang.String">
+        select book_id from borrow where borrow_id=#{borrowID}
+    </select>
+
+    <select id="inTheLibrary" resultMap="BookMap">
+        select * from book where book_status='在平台待借' limit #{page},#{limit}
+    </select>
+
+    <select id="selectInTheLibraryCount" resultType="int">
+        select count(*) from book where book_status='在平台待借'
+    </select>
+
+    <select id="selectInTheLibrary" resultMap="BookMap">
+        select * from book where book_status='在平台待借' and book_name like '%' #{bookName} '%'
+    </select>
+
+    <select id="lend" resultMap="BookMap">
+        select * from book where book_status='借出' limit #{page},#{limit}
+    </select>
+
+    <select id="selectLendCount" resultType="int">
+        select count(*) from book where book_status='借出'
+    </select>
+
+    <select id="selectLend" resultMap="BookMap">
+        select * from book where book_status='借出' and book_name like '%' #{bookName} '%'
+    </select>
+
+    <select id="selectAccountManagement" resultType="com.cx.domain.User">
+        select * from user where user_id like '%' #{userID} '%'
+    </select>
+
+<!--  <insert id="register">
+    insert into
+    admin(
+        admin_id,
+        username,
+        password,
+        real_name,
+        sex,
+        phone,
+        s_number,
+        authority
+    )
+    values(
+        #{adminId},
+        #{username},
+        #{password},
+        #{realName},
+        #{sex},
+        #{phone},
+        #{sNumber},
+        #{authority}
+    )
+  </insert>-->
+
+    <update id="updateShareStatus">
+        update share set share_status=1, back_time=#{backTime} where share_book_id=#{shareID} and share_status!=1
+    </update>
+
+    <update id="updateBookStatus">
+        update book set book_status='在平台待借' where book_id=#{bookID}
+    </update>
+
+    <update id="updateBorrowStatus">
+        update borrow set borrow_status=1, borrow_end_time=#{borrow_end_time} where borrow_id=#{borrowID} and borrow_status!=1
+    </update>
+
+    <update id="updateBorrowBookStatus">
+        update book set book_status='借出' where book_id=#{bookID}
+    </update>
+</mapper>

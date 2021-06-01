@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>图书分享系统</title>
+        <link rel="stylesheet" href="./iconfont/iconfont.css" />
+        <link rel="stylesheet" href="./common.css" />
+        <style>
+            main .user-info {
+                padding: 1em;
+            }
+            main .user-info p {
+                margin-bottom: 0.5em;
+            }
+            main .user-info .username {
+                font-size: 1.5em;
+                color: #333;
+            }
+            main .user-info .tel {
+                font-size: 1em;
+                color: gray;
+            }
+            main .order > div {
+                margin-bottom: 2em;
+            }
+            main .order .order-title {
+                font-size: 1rem;
+                text-align: center;
+            }
+            main .order-list > li {
+                width: 100%;
+                overflow: hidden;
+                height: 3.6em;
+                text-indent: 2rem;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+            main .order-list > li > .book-name {
+                font-size: 1rem;
+                color: #222;
+            }
+            main .order-list > li .order-id {
+                font-size: 0.8rem;
+                color: #999;
+                line-height: 1.2rem;
+            }
+            /*       .popup2 {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                padding: 0.5em 1em 1em;
+                background: rgba(230, 230, 230, 0.5);
+                border-radius: 1em;
+                list-style: none;
+            }
+            .popup2 p {
+                text-align: center;
+                padding: 0.5rem 0;
+            }
+            .popup2 .btn {
+                display: flex;
+                justify-content: space-around;
+            }
+            .popup2 .btn button {
+                display: inline-block;
+                height: 3em;
+                line-height: 3em;
+                padding: 0 1.4em;
+                border: 1px solid transparent;
+                color: #fff;
+                white-space: nowrap;
+                text-align: center;
+                font-size: 0.8rem;
+                border-radius: 0.2em;
+            }
+            .popup2 #ok {
+                background-color: rgb(37, 188, 248);
+                margin-right: 0.5em;
+            }
+            .popup2 #cancel {
+                background-color: rgb(247, 108, 108);
+            } */
+
+            main > div > button {
+                display: block;
+                height: 3em;
+                line-height: 3em;
+                padding: 0 1.4em;
+                border: 1px solid transparent;
+                color: #fff;
+                white-space: nowrap;
+                text-align: center;
+                font-size: 0.8rem;
+                border-radius: 0.2em;
+                margin: 1em auto;
+            }
+            #logout {
+                width: 60%;
+                background-color: rgb(247, 99, 79);
+            }
+            #changePassword {
+                width: 60%;
+                background-color: rgb(37, 188, 248);
+            }
+        </style>
+    </head>
+    <body>
+        <script>
+            if (!localStorage.getItem('userID')) window.location.href = './login.html'
+        </script>
+        <header>图 书 分 享 系 统</header>
+        <main>
+            <div class="user-info">
+                <p class="username" id="username"></p>
+                <p class="tel">电话 : <span id="phone"></span></p>
+                <p class="tel">学号 : <span id="s_number"></span></p>
+                <p class="tel">真实姓名 : <span id="real_name"></span></p>
+            </div>
+            <div class="order">
+                <div>
+                    <p class="order-title">分享审核中</p>
+                    <ul class="order-list" id="share-check-order">
+                        <li>
+                            <p class="book-name">暂无分享审核中</p>
+                        </li>
+                       
+                    </ul>
+                </div>
+                <div>
+                    <p class="order-title">借阅审核中</p>
+                    <ul class="order-list" id="borrow-check-order">
+                        <li>
+                            <p class="book-name">暂无借阅审核中</p>
+                            <p class="order-id"></p>
+                        </li>
+                   
+                    </ul>
+                </div>
+            </div>
+            <div>
+                <button id="changePassword" onclick="window.location.href='./change-password.html'">修改密码</button>
+                <button id="logout">退出登入</button>
+            </div>
+        </main>
+        <div class="bottom-nav">
+            <ul>
+                <li class="icon" onclick="window.location.href='./index.html'"><i class="iconfont icon-shu"></i><span>个人书籍</span></li>
+                <li class="icon" onclick="window.location.href='./share.html'"><i class="iconfont icon-shu1"></i><span>大家分享</span></li>
+                <li class="icon active"><i class="iconfont icon-ren"></i><span>个人中心</span></li>
+            </ul>
+        </div>
+        <script src="./index.js"></script>
+        <script>
+            get('/test/user/base_information', {
+                userID: localStorage.getItem('userID')
+            }).then((res) => {
+                if (res.code === 0) {
+                    toast('数据获取异常')
+                } else {
+                    const { phone, s_number, real_name, username } = res.data.user_information
+                    document.getElementById('username').innerHTML = username
+                    document.getElementById('phone').innerHTML = phone
+                    document.getElementById('s_number').innerHTML = s_number
+                    document.getElementById('real_name').innerHTML = real_name
+                }
+            })
+        </script>
+        <script>
+            const shareCheckOrder = document.getElementById('share-check-order')
+            const borrowCheckOrder = document.getElementById('borrow-check-order')
+            console.log(localStorage.getItem('userID'))
+            get('/test/user/share_borrow_id', {
+                userID: localStorage.getItem('userID')
+            }).then((res) => {
+
+                if (res.code === 0) {
+                    toast('数据获取异常')
+                } else {
+                    const {MyBorrowID,MyShareID } = res.data
+                    if(MyShareID.length !== 0){
+                        shareCheckOrder.innerHTML = MyShareID.map(item=>`
+                        <li>
+                            <p class="book-name">${item.share_bookName}</p>
+                            <p class="order-id">${item.shareBookId}</p>
+                        </li>
+                        `)
+                    }
+
+                    if(MyBorrowID.length !== 0){
+                        borrowCheckOrder.innerHTML = MyBorrowID.map(item=>`
+                        <li>
+                            <p class="book-name">${item.borrow_bookName}</p>
+                            <p class="order-id">${item.borrowId}</p>
+                        </li>
+                        `)
+                    }
+                   
+                }
+            })
+        </script>
+
+        <script>
+            const aOrder = document.querySelectorAll('.order-list li')
+            for (const order of aOrder) {
+                order.addEventListener('touchstart', function () {
+                    order.style.backgroundColor = 'rgba(240, 240, 240, 0.5)'
+                })
+                order.addEventListener('touchend', function () {
+                    order.style.backgroundColor = '#fff'
+                })
+            }
+            document.getElementById('logout').onclick = function () {
+                localStorage.clear()
+                window.location.href = './login.html'
+            }
+
+        </script>
+    </body>
+</html>
