@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zt.kehuduan.dao.UserDao">
+
+    <select id="login" resultType="java.lang.String">
+        select user_id from user where user_name=#{user_name} and user_password=#{password}
+    </select>
+
+    <select id="selectMyInformation" resultType="map">
+        select user_name,user_qq,user_phone from user where user_id=#{user_id}
+    </select>
+
+    <select id="getUserImage" resultType="java.lang.String">
+        select user_image from user where user_id=#{user_id}
+    </select>
+
+    <select id="selectCollet" resultType="java.lang.String">
+        select goods_id from collect where goods_id=#{goods_id} and user_id=#{user_id}
+    </select>
+
+    <insert id="register">
+        insert into
+        user(
+            user_id,
+            user_image,
+            user_name,
+            user_password,
+            user_phone,
+            user_qq
+            )
+        values(
+            #{user_id},
+            #{user_image},
+            #{user_name},
+            #{user_password},
+            #{user_phone},
+            #{user_qq}
+        )
+    </insert>
+
+    <insert id="addCollect">
+        insert into collect(
+            goods_id,
+            user_id
+        )
+        values(
+            #{goods_id},
+            #{user_id}
+        )
+    </insert>
+
+    <update id="updateUserImage">
+        update user set user_image=#{user_image} where user_id=#{user_id}
+    </update>
+
+    <update id="changeQQ">
+        update user set user_qq=#{newQQ} where user_id=#{user_id}
+    </update>
+
+    <update id="changePhone">
+        update user set user_phone=#{newPhone} where user_id=#{user_id}
+    </update>
+
+    <delete id="deleteCollect">
+        delete from collect where goods_id=#{goods_id} and user_id=#{user_id}
+    </delete>
+
+    <delete id="deleteCollectByGoodsID">
+        delete from collect where goods_id=#{goods_id}
+    </delete>
+</mapper>

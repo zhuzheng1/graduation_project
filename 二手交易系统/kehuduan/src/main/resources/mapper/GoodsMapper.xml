@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zt.kehuduan.dao.GoodsDao">
+
+    <select id="selectAllGoodsInformation" resultType="com.zt.kehuduan.domain.Goods">
+        select
+        g.*,
+        c.new_old new_old,
+        c.item_status items_status,
+        c.origin origin
+        from goods g
+        join status c
+        on c.goods_id=g.goods_id
+        where g.goods_status=1
+    </select>
+
+    <select id="selectAllGoodsCount" resultType="int">
+        select count(*) from goods where goods_status=1
+    </select>
+
+    <select id="homePageSelect" resultType="com.zt.kehuduan.domain.Goods">
+        select
+        g.*,
+        c.new_old new_old,
+        c.item_status items_status,
+        c.origin origin
+        from goods g
+        join status c
+        on c.goods_id=g.goods_id
+        where g.goods_status=1 and g.goods_title like '%' #{goods_title} '%'
+    </select>
+
+    <select id="lookUsPublish" resultType="com.zt.kehuduan.domain.Goods">
+        select
+        g.*,
+        c.new_old new_old,
+        c.item_status items_status,
+        c.origin origin
+        from goods g
+        join status c
+        on c.goods_id=g.goods_id
+        where g.goods_status=1 and g.user_id=#{user_id}
+    </select>
+
+    <select id="lookUsPublishZero" resultType="com.zt.kehuduan.domain.Goods">
+        select
+        g.*,
+        c.new_old new_old,
+        c.item_status items_status,
+        c.origin origin
+        from goods g
+        join status c
+        on c.goods_id=g.goods_id
+        where g.goods_status=0 and g.user_id=#{user_id}
+    </select>
+
+    <select id="lookUsCollect" resultType="com.zt.kehuduan.domain.Goods">
+        select
+        g.*,
+        s.new_old new_old,
+        s.item_status items_status,
+        s.origin origin
+        from collect c
+        join goods g
+        on c.goods_id= g.goods_id
+        join status s
+        on s.goods_id=g.goods_id
+        where c.user_id=#{user_id}
+    </select>
+
+    <select id="getImage" resultType="java.lang.String">
+        select goods_image from goods where goods_id=#{goods_id}
+    </select>
+
+    <insert id="saveGoods">
+        insert into goods(
+            goods_id,
+            user_id,
+            goods_image,
+            goods_title,
+            goods_detail,
+            goods_type,
+            goods_price,
+            goods_place,
+            goods_phone,
+            goods_qq,
+            goods_status
+        )
+        values(
+            #{goods_id},
+            #{user_id},
+            #{goods_image},
+            #{goods_title},
+            #{goods_detail},
+            #{goods_type},
+            #{goods_price},
+            #{goods_place},
+            #{goods_phone},
+            #{goods_qq},
+            #{goods_status}
+        )
+    </insert>
+
+    <update id="changeQQ">
+        update goods set goods_qq=#{newQQ} where user_id=#{user_id}
+    </update>
+
+    <update id="changePhone">
+        update goods set goods_phone=#{newPhone} where user_id=#{user_id}
+    </update>
+
+    <delete id="deleteGoods">
+        delete from goods where goods_id=#{goods_id}
+    </delete>
+</mapper>
